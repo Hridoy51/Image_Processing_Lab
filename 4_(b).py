@@ -2,39 +2,51 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Load the grayscale image
-image = cv2.imread('sample1.jpg', cv2.IMREAD_GRAYSCALE)
+def plotimg(image,x,y,z,st):
+    plt.subplot(x,y,z)
+    plt.imshow(image,cmap="gray")
+    plt.title(st)
 
-# Add Gaussian noise to the image
-mean = 0
-stddev = 25  # Adjust the standard deviation to control noise intensity
-noisy_image = image + np.random.normal(mean, stddev, image.shape).astype(np.uint8)
+def ideal_L_Pass(image,D0):
+    M, N = image.shape
+    H = np.zeros((M, N), dtype=np.float32)
+    for u in range(M):
+        for v in range(N):
+            D = np.sqrt((u - M/2)**2 + (v - N/2)**2)
+            if(D<=D0):
+                H[u,v] = 1
+    im = image*H
+    return im
+def main():
+    # Load the grayscale image
+    Original_image = cv2.imread('Cat.jpg', cv2.IMREAD_GRAYSCALE)
 
-# Define a function to create an Ideal Lowpass Filter
-def ideal_lowpass_filter(shape, d0):
-    rows, cols = shape
-    x = np.arange(-cols // 2, cols // 2)
-    y = np.arange(-rows // 2, rows // 2)
-    X, Y = np.meshgrid(x, y)
-    D = np.sqrt(X**2 + Y**2)
-    H = np.zeros_like(D)
-    H[D <= d0] = 1
-    return H
+    # Generate Gaussian noise
+    noise = np.random.normal(7, 10, Original_image.shape).astype(np.uint8)
 
-# Define a range of D0 values to test
-d0_values = [10, 30, 50, 100]
+    # Add noise to the original image
+    image = cv2.add(Original_image, noise)
 
-# Apply Ideal Lowpass Filter with different D0 values and plot the results
-plt.figure(figsize=(12, 12))
-plt.subplot(3, 3, 1), plt.imshow(noisy_image, cmap='gray')
-plt.title('Noisy Image'), plt.axis('off')
+    # Perform FFT on the image
+    fft_image = np.fft.fft2(image)
+    fft_shifted = np.fft.fftshift(fft_image)
+    magnitude_spectrum = np.log(np.abs(fft_shifted) + 1)  # Apply log for visualization
+    plotimg(Original_image,4,2,1,"Original image")
+    plotimg(image,4,2,2,"Noisy Image")
+    plotimg(magnitude_spectrum,4,2,3,"DFT magnitude spectrum")
 
-for i, d0 in enumerate(d0_values):
-    ideal_lp_kernel = ideal_lowpass_filter(image.shape, d0)
-    filtered_image = np.fft.ifft2(np.fft.fft2(noisy_image) * ideal_lp_kernel).real
-    plt.subplot(3, 3, i + 2)
-    plt.imshow(filtered_image, cmap='gray')
-    plt.title(f'Ideal LP (D0={d0})'), plt.axis('off')
+    #using ideal filter 
+    d0 = 20
+    for i in range(5):
+        filtered_ideal = ideal_L_Pass(fft_shifted,d0)
+        #perform Inverse fft on ideal filtered image
+        reconstructed_ishifted = np.fft.ifftshift(filtered_ideal)
+        reconstructed_ishifted_ifft = np.fft.ifft2(reconstructed_ishifted).real
+        plotimg(reconstructed_ishifted_ifft,4,2,4+i,f"Reconstructed image using ideal, d0 = {d0}")
+        d0+=30
 
-plt.tight_layout()
-plt.show()
+    
+    plt.show()
+main()
+
+

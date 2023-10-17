@@ -11,10 +11,8 @@ def gaussian(D0,f_img):
     M, N = f_img.shape
     Gaussian = np.zeros((M, N), dtype=np.float32)
     for u in range(M):
-        for v in range(N):
-            
+        for v in range(N): 
             D =np.sqrt( (u - M/2)**2 + (v - N/2)**2)
-            
             Gaussian[u, v] = np.exp(-((D**2) / (2 * D0**2)))
     filtered_image=Gaussian*f_img
     
