@@ -19,7 +19,7 @@ def ideal_L_Pass(image,D0):
     return im
 def main():
     # Load the grayscale image
-    Original_image = cv2.imread('Cat.jpg', cv2.IMREAD_GRAYSCALE)
+    Original_image = cv2.imread('filteringImage.jpg', cv2.IMREAD_GRAYSCALE)
 
     # Generate Gaussian noise
     noise = np.random.normal(7, 10, Original_image.shape).astype(np.uint8)
@@ -36,14 +36,14 @@ def main():
     plotimg(magnitude_spectrum,4,2,3,"DFT magnitude spectrum")
 
     #using ideal filter 
-    d0 = 20
+    d0 = 5
     for i in range(5):
         filtered_ideal = ideal_L_Pass(fft_shifted,d0)
         #perform Inverse fft on ideal filtered image
         reconstructed_ishifted = np.fft.ifftshift(filtered_ideal)
         reconstructed_ishifted_ifft = np.fft.ifft2(reconstructed_ishifted).real
         plotimg(reconstructed_ishifted_ifft,4,2,4+i,f"Reconstructed image using ideal, d0 = {d0}")
-        d0+=30
+        d0+=15
 
     
     plt.show()

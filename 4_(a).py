@@ -28,7 +28,7 @@ def butterworth(D0,n,f_img):
     return G  
 def main():
     # Load the grayscale image
-    Original_image = cv2.imread('sample1.jpg', cv2.IMREAD_GRAYSCALE)
+    Original_image = cv2.imread('filteringImage.jpg', cv2.IMREAD_GRAYSCALE)
 
     # Generate Gaussian noise
     noise = np.random.normal(7, 10, Original_image.shape).astype(np.uint8)
