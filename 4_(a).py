@@ -55,7 +55,7 @@ def main():
     reconstructed_ishifted = np.fft.ifftshift(filtered_butter)
     reconstructed_ishifted_ifft = np.fft.ifft2(reconstructed_ishifted).real
     plotimg(reconstructed_ishifted_ifft,3,2,5,"Reconstructed image using Butterworth")
+    
+    plt.tight_layout()
     plt.show()
 main()
-
-
