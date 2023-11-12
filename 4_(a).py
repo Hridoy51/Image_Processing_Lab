@@ -15,7 +15,6 @@ def gaussian(D0,f_img):
             D =np.sqrt( (u - M/2)**2 + (v - N/2)**2)
             Gaussian[u, v] = np.exp(-((D**2) / (2 * D0**2)))
     filtered_image=Gaussian*f_img
-    
     return filtered_image
 def butterworth(D0,n,f_img):
     M, N = f_img.shape
@@ -45,15 +44,17 @@ def main():
     plotimg(magnitude_spectrum,3,2,3,"DFT magnitude spectrum")
 
     #using butter worth filter and gaussian
-    filtered_gaussian = gaussian(50,fft_shifted)
-    filtered_butter = butterworth(50,4,fft_shifted)
+    filtered_gaussian = gaussian(15,fft_shifted)
+    filtered_butter = butterworth(15,4,fft_shifted)
     #perform Inverse fft on gaussian filtered image
     reconstructed_ishifted = np.fft.ifftshift(filtered_gaussian)
     reconstructed_ishifted_ifft = np.fft.ifft2(reconstructed_ishifted).real
+    
     plotimg(reconstructed_ishifted_ifft,3,2,4,"Reconstructed image using Gaussian")
     #perform inverse fft on butterworth filtered image
     reconstructed_ishifted = np.fft.ifftshift(filtered_butter)
     reconstructed_ishifted_ifft = np.fft.ifft2(reconstructed_ishifted).real
+    
     plotimg(reconstructed_ishifted_ifft,3,2,5,"Reconstructed image using Butterworth")
     
     plt.tight_layout()
