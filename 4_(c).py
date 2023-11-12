@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 def plotimg(image,x,y,z,st):
     plt.subplot(x,y,z)
-    plt.imshow(cv2.cvtColor(image,cv2.COLOR_BGR2RGB))
+    plt.imshow(image,cmap='gray')
     plt.title(st)
 #high pass
 def ideal_H_Pass(image,D0):
@@ -51,31 +51,27 @@ def main():
     plotimg(image,3,2,2,"Noisy Image")
 
     #construct and plot ideal High pass of orignal image 
-    ideal_original = ideal_H_Pass(fft_Ori_shifted,50)
+    ideal_original = ideal_H_Pass(fft_Ori_shifted,30)
     Origial_Edge_Ideal = np.fft.ifftshift(ideal_original)
-    original_ideal_Filtered = np.fft.ifft2(Origial_Edge_Ideal).real
-    original_ideal_Filtered = np.array(original_ideal_Filtered,dtype=np.uint8)
+    original_ideal_Filtered = np.abs(np.fft.ifft2(Origial_Edge_Ideal))
     plotimg(original_ideal_Filtered,3,2,3,"ideal H_Pass of Original")
 
     #construct and plot Gaussian High pass of orignal image 
     gaussian_original = gaussian(fft_Ori_shifted,30)
     Origial_Edge_Gaussian = np.fft.ifftshift(gaussian_original)
-    original_Gaussian_Filtered = np.fft.ifft2(Origial_Edge_Gaussian).real
-    original_Gaussian_Filtered = np.array(original_Gaussian_Filtered,dtype=np.uint8)
+    original_Gaussian_Filtered = np.abs(np.fft.ifft2(Origial_Edge_Gaussian))
     plotimg(original_Gaussian_Filtered,3,2,4,"Gaussian H_Pass of Original")
 
     #construct and plot ideal High pass of Noisy image 
     ideal_Noisy = ideal_H_Pass(fft_Noi_shifted,50)
     Noisy_Edge_ideal = np.fft.ifftshift(ideal_Noisy)
-    Noisy_ideal_Filtered = np.fft.ifft2(Noisy_Edge_ideal).real
-    Noisy_ideal_Filtered = np.array(Noisy_ideal_Filtered,dtype=np.uint8)
+    Noisy_ideal_Filtered = np.abs(np.fft.ifft2(Noisy_Edge_ideal))
     plotimg(Noisy_ideal_Filtered,3,2,5,"ideal H_Pass of Noisy")
 
     #construct and plot Gaussian High pass of Noisy image 
     gaussian_Noisy = gaussian(fft_Noi_shifted,50)
     Noisy_Edge_gaussian = np.fft.ifftshift(gaussian_Noisy)
-    Noisy_gaussian_Filtered = np.fft.ifft2(Noisy_Edge_gaussian).real
-    Noisy_gaussian_Filtered = np.array(Noisy_gaussian_Filtered,dtype=np.uint8)
+    Noisy_gaussian_Filtered = np.abs(np.fft.ifft2(Noisy_Edge_gaussian))
     plotimg(Noisy_gaussian_Filtered,3,2,6,"Gaussian H_Pass of Noisy")
 
     
